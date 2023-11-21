@@ -1,0 +1,23 @@
+- name: Ensure directories exists
+  ansible.builtin.file:
+    dest: "{{ item }}"
+    state: directory
+    mode: '0644'
+  loop:
+    - ~/compose
+    - ~/compose/growthbook
+
+- name: Ensure docker-compose file has been updated
+  ansible.builtin.template:
+    src: "{{ item }}"
+    dest: ~/compose/growthbook/
+    mode: '0644'
+  loop:
+    - docker-compose.yml
+
+- name: Ensure growthbook compose files are up
+  community.docker.docker_compose:
+    state: present
+    project_src: ~/compose/growthbook/
+    files:
+      - docker-compose.yml
